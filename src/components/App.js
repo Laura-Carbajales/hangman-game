@@ -1,39 +1,52 @@
 import '../styles/App.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import callToApi from '../services/api.js';
+
 const App = () => {
-  const [error, setError] = useState(0);
   //Estado palabra a adivinar
-  const [word, setWord] = useState('katacroker');
+  const [word, setWord] = useState('');
   //Estado letras que introduce la jugadora
   const [userLetters, setUserLetters] = useState([]);
   //Estado la última letra introducida por la jugadora
   const [lastLetter, setlastLetter] = useState('');
+  //Para pintar el hangman
+  //Estado letras buenas
+  const [goodLetters, setGoodLetters] = useState([]);
+  //Estado letras fallidas
+  const [wrongLetters, setWrongLetters] = useState([]);
+
+  useEffect(() => {
+    callToApi().then((response) => {
+      console.log(response);
+      setWord(response);
+    });
+  }, []);
 
   const handleLastLetter = (ev) => {
+    ev.preventDefault();
     const inputValue = ev.currentTarget.value;
-    if (/^[a-zA-ZáäéëíïóöúüÁÄÉËÍÏÓÖÚÜñÑ]?$/.test(inputValue)) {
-      setlastLetter(ev.currentTarget.value);
-      if (lastLetter !== '') {
-        setUserLetters([...userLetters, lastLetter]);
+    if (inputValue.match('^[a-zA-ZáäéëíïóöúüÁÄÉËÍÏÓÖÚÜñÑ]?$')) {
+      setlastLetter(inputValue);
+      if (inputValue !== '') {
+        setUserLetters([...userLetters, inputValue]);
+        if (word.includes(inputValue)) {
+          //Al array de letras buenas
+          setGoodLetters([...goodLetters, inputValue]);
+        } else {
+          //Al array de letras fallidas
+          setWrongLetters([...wrongLetters, inputValue]);
+        }
       }
     }
   };
-  const handleCounter = (ev) => {
-    ev.preventDefault();
-    if (error <= 13) {
-      setError(error + 1);
-      console.log(error);
-    } else if (error > 13) {
-      setError(0);
-    }
-  };
+
   const renderSolutionLetters = () => {
     const wordLetters = word.split('');
     return wordLetters.map((letter, index) => {
-      if (letter === lastLetter) {
+      if (goodLetters.findIndex((currentLetter) => letter === currentLetter) !== -1) {
         return (
           <li key={index} className='letter'>
-            {lastLetter}
+            {letter}
           </li>
         );
       } else {
@@ -79,9 +92,8 @@ const App = () => {
                 onChange={handleLastLetter}
               />
             </form>
-            <button onClick={handleCounter}>Errores</button>
           </section>
-          <section className={`dummy error-${error}`}>
+          <section className={`dummy error-${wrongLetters.length}`}>
             <span className='error-13 eye'></span>
             <span className='error-12 eye'></span>
             <span className='error-11 line'></span>
