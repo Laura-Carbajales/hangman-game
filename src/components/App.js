@@ -55,6 +55,20 @@ const App = () => {
     });
   };
 
+  const renderWrongLetters = () => {
+    return wrongLetters.map((letter, index) => {
+      if (wrongLetters.findIndex((currentLetter) => letter === currentLetter) !== -1) {
+        return (
+          <li key={index} className='letter'>
+            {letter}
+          </li>
+        );
+      } else {
+        return <li key={index} className='letter'></li>;
+      }
+    });
+  };
+
   return (
     <div>
       <div className='page'>
@@ -69,13 +83,7 @@ const App = () => {
             </div>
             <div className='error'>
               <h2 className='title'>Letras falladas:</h2>
-              <ul className='letters'>
-                <li className='letter'>f</li>
-                <li className='letter'>q</li>
-                <li className='letter'>h</li>
-                <li className='letter'>p</li>
-                <li className='letter'>x</li>
-              </ul>
+              <ul className='letters'>{renderWrongLetters()}</ul>
             </div>
             <form className='form'>
               <label className='title' htmlFor='last-letter'>
