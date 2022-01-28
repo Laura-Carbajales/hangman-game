@@ -6,6 +6,7 @@ import Dummy from './Dummy';
 import ErrorLetters from './ErrorLetters';
 import SolutionLetters from './SolutionLetters';
 import Form from './Form';
+import Footer from './Footer';
 
 const App = () => {
   //Estado palabra a adivinar
@@ -57,6 +58,7 @@ const App = () => {
           </section>
           <Dummy length={wrongLetters.length} />
         </main>
+        <Footer />
       </div>
     </div>
   );
