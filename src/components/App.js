@@ -7,6 +7,9 @@ import ErrorLetters from './ErrorLetters';
 import SolutionLetters from './SolutionLetters';
 import Form from './Form';
 import Footer from './Footer';
+import Instructions from './Instructions';
+import Options from './Options';
+import { Route, Switch } from 'react-router-dom';
 
 const App = () => {
   //Estado palabra a adivinar
@@ -46,16 +49,32 @@ const App = () => {
     }
   };
 
+  const handleWord = (value) => {
+    setWrongLetters([]);
+    setGoodLetters([]);
+    setWord(value);
+  };
+
   return (
     <div>
       <div className='page'>
         <Header title='Juego del ahorcado' />
         <main className='main'>
-          <section>
-            <SolutionLetters word={word} goodLetters={goodLetters} />
-            <ErrorLetters wrongLetters={wrongLetters} />
-            <Form handleLastLetter={handleLastLetter} />
-          </section>
+          <Switch>
+            <Route path='/' exact>
+              <section>
+                <SolutionLetters word={word} goodLetters={goodLetters} />
+                <ErrorLetters wrongLetters={wrongLetters} />
+                <Form handleLastLetter={handleLastLetter} />
+              </section>
+            </Route>
+            <Route path='/instructions'>
+              <Instructions />
+            </Route>
+            <Route path='/options'>
+              <Options handleWord={handleWord} />
+            </Route>
+          </Switch>
           <Dummy length={wrongLetters.length} />
         </main>
         <Footer />
