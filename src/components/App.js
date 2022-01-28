@@ -9,6 +9,7 @@ import Form from './Form';
 import Footer from './Footer';
 import Instructions from './Instructions';
 import Options from './Options';
+import Loading from './Loading';
 import { Route, Switch } from 'react-router-dom';
 
 const App = () => {
@@ -23,11 +24,15 @@ const App = () => {
   const [goodLetters, setGoodLetters] = useState([]);
   //Estado letras fallidas
   const [wrongLetters, setWrongLetters] = useState([]);
+  //Estado para el Loader
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     callToApi().then((response) => {
       console.log(response);
       setWord(response);
+      setIsLoading(false);
     });
   }, []);
 
@@ -60,6 +65,7 @@ const App = () => {
       <div className='page'>
         <Header title='Juego del ahorcado' />
         <main className='main'>
+          <Loading isLoading={isLoading} />
           <Switch>
             <Route path='/' exact>
               <section>
